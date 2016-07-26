@@ -1,8 +1,10 @@
+""" THIS IS THE BACKEND """
+
 import time
 import BaseHTTPServer 
 import os
 
-HOST_NAME = "" # !!!REMEMBER TO CHANGE THIS!!!
+HOST_NAME = "" 
 PORT_NUMBER = 8000
 
 SCORES = []
