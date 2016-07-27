@@ -14,7 +14,7 @@ def comp(a,b):
   return b["score"] - a["score"]
 
 def remove_mini():
-  mini = 0
+  mini = 99999999
   for i in SCORES:
     if(i["score"] <= mini):
       mini = i["score"]
