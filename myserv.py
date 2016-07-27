@@ -5,14 +5,18 @@ import BaseHTTPServer
 import os
 
 HOST_NAME = "" 
-PORT_NUMBER = 8000
+PORT_NUMBER = 80
 
 SCORES = []
+max_scores = 10
+
+def comp(a,b):
+  return b["score"] - a["score"]
 
 def remove_mini():
   mini = 0
   for i in SCORES:
-    if(i["score"] < mini):
+    if(i["score"] <= mini):
       mini = i["score"]
 
   for i in range(len(SCORES)):
@@ -25,10 +29,11 @@ def register(name, score):
   new["name"] = name
   new["score"] = score
 
-  if (len(SCORES) >= 10): 
+  if (len(SCORES) >= max_scores): 
     remove_mini()
 
   SCORES.append(new)
+  SCORES.sort(comp)
 
 def cgi(s, url):
 
@@ -45,8 +50,15 @@ def cgi(s, url):
     s.send_response(200)
     s.send_header("Content-type", "text/html")  
     s.end_headers()
-    for i in SCORES:
-      s.wfile.write("<tr><td>" + i["name"] + "</td><td>" + str(i["score"]) + "</td></tr>")
+
+    s.wfile.write("<thead><tr><th></th><th><p>Name</p></th><th><p>Score</p></th></tr></thead>")
+    s.wfile.write("<tbody>")
+    if(len(SCORES) < 1):
+      s.wfile.write("<td>No</td><td>results</td><td>yet ...</td>")
+      return
+    for i in range(len(SCORES)):
+      s.wfile.write("<tr><td>" + str(i+1) + ":</td><td>" + SCORES[i]["name"] + "</td><td>" + str(SCORES[i]["score"]) + "</td></tr>")
+    s.wfile.write("</tbody>")
   elif(action == "post_score"):
     register(url.split("name=")[1].split("&")[0], int(url.split("score=")[1].split("&")[0]))
     s.send_response(200)
