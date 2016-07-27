@@ -1,5 +1,6 @@
 # This is a server hosting snake!
 This is a little website that runs the game 'Snake'. 
+
 Server backed with python 'BaseHTTPServer'.
 # To run it on your system:
 I only know how to make this run on a mac or Linux machine.
