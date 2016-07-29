@@ -1,70 +1,41 @@
-<!-- 
-	A snake game and a server system in place to log results.. 
--->
-
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Messaround</title>
-	<script src="scripts/jquery.js"></script>
-	<link rel="stylesheet" type="text/css" href="style/look.css"/>
 </head>
-<body>
-	<div id="cdiv">
-		<br>
-		<center>
-			<table>
-				<tbody>
-				<tr>
-					<td>
-						<div id="name-give-div">
-							<table>
-								<tbody>
-									<tr>
-										<td>
-											<input class="inpt" id="name-give-input" value="Name"></input>
-										</td>
-										<td>
-											<button class="btn overout" id="name-give-btn">Enter</button>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</td>
-					<td>
-						<div id="canvas-div" style="display:none">
-							<canvas id="tcanvas" width = "640" height = "640">
-								Your browser does not support the HTML5 canvas tag.
-							</canvas>	
-						</div>
-					</td>
-					<td>
-						<div id="stuff-div" style="display:none;width:300px;height:640px">
-							<center>
-								<p class="player-info" id="player-name-p"></p>
-								<p class="player-info" id="points"></p>
-								<br>
-								<h1>Top 10</h1><img id="loader-gif" style="display:none" src="style/ajax-loader.gif"></img>
-								<table id="highscore-row">
-								</table>
-								<button class="btn overout" id="restart-btn" style="visibility:hidden;position:relative;top:40px;" onclick="restart()">Restart</button>
-							</center>
-						</div>
-					</td>	
-				</tr>
-				</tbody>
-			</table>
-		</center>
-	</div>
+<style>
+	.round {
+		display: block;
+		top: 0;
+		width: 10%;
+		height: 2%;	
+		text-decoration: none;		
+		text-align: center;
+		font-size: 25px;		
+		text-shadow: 0 1px 0 rgba(255,255,255,.7);
+		letter-spacing: -.065em;
+		font-family: "Hammersmith One", sans-serif;		
+		-webkit-transition: all .25s ease-in-out;
+		-o-transition: all .25s ease-in-out;
+		-moz-transition: all .25s ease-in-out;
+		transition: all .25s ease-in-out;
+		border-radius: 10px;
+		z-index: 1;
+		border-width: 2px;
+		border-style: solid;
+	}
+</style>
+<body onload="init()">
+<div id="cdiv">
+<canvas id ="tcanvas" style="font-family: "Hammersmith One", sans-serif" width = "640" height = "640">
+Your browser does not support the HTML5 canvas tag.</canvas>
+</div>
+<div style="position:relative;">
+<p id='points'></p>
+<button class="round" onclick="restart()">Restart</button>
+</div>
 </body>
 <script>
-
-// player info
-var player_name = "";
-
-// highscore info
-var scores = [];
 
 // global variables telling the snake how to move
 var dr = 0;
@@ -113,38 +84,6 @@ function init(){
 
 	gmover = false;
 	go();
-}
-
-function post_result(){
-
-	var url = "game.cgi?action=post_score&name=" + player_name + "&score=" + points;
-
-	$.ajax({method: "GET", url: url, dataType: "text",
-		success: function(response){
-			setTimeout(get_highscore, 1000);
-		}, 
-		error: function(){
-			console.log("highscore was not posted");
-		}
-	});
-
-}
-
-function get_highscore(){
-
-	$("#ajax-loader").css("display", "inherit");
-
-	$.ajax({method: "GET", url: "game.cgi?action=get_highscore", dataType: "text",
-		success: function(response){
-			$("#highscore-row").html(response);
-			$("#ajax-loader").css("display", "none");
-		}, 
-		error: function(){
-			console.log("highscore was not loaded");
-			$("#ajax-loader").css("display", "none");
-		}
-	});
-
 }
 
 // the game loop!
@@ -223,18 +162,27 @@ function removeTail(){
 
 // function called upon game lost.
 function gameover(){
-//	alert("game over!!!!");
+	alert("game over!!!!");
 	clearInterval(timerId);
-	$("#restart-btn").css("visibility", "visible");
-
-	post_result();
-	get_highscore();
-
 	gmover = true;
 }
 
 // handling the focus of the keylistener (solution found in thread on stackoverflow.com)
 var lastDownTarget, canvas;
+window.onload = function(e){
+	canvas = document.getElementById("tcanvas");
+
+	document.addEventListener('mousedown',function(event){
+		lastDownTarget = event.target;
+	},false);
+
+	document.addEventListener('keydown',function(event){
+		if(lastDownTarget == canvas){
+			keypressed(event);
+		}
+	},false);
+	init();
+}
 
 // the timer identifier used for handling the restart calls.  
 var timerId = 0;
@@ -274,15 +222,13 @@ function keypressed(event){
 
 	var y = event.keyCode;
 
-    if(y == 65 || y == 37){
+    if(y == 65){
     	left();
-    }else if(y == 68 || y == 39){
+    }else if(y == 68){
     	right();
-    }else if(y == 83 || y == 40){
+    }else if(y == 83){
     	down();
-    } else if(y == 87){
-    	up();
-    } else if(y == 38){
+    }else if(y == 87){
     	up();
     }
 
@@ -321,54 +267,9 @@ function down(){
 function restart(){
 	if(gmover){
 		init();
-		$("#restart-btn").css("visibility", "hidden")
 		gmover=false;
 	}
 }
-
-function addHandlers(){
-	$(".overout")
-	.mouseover(function() {
-		$(this).fadeTo(100,1.0);
-	})
-	.mouseout(function() {
-		$(this).fadeTo(100,0.5);
-	});
-
-	$("#name-give-btn").unbind("click").click(function(){
-		player_name = $("#name-give-input").val();
-		$("#name-give-div").css("display", "none");
-		$("#name-give-btn").css("display", "none");
-		$("#stuff-div").css("display", "inherit");
-		$("#canvas-div").css("display", "inherit");		
-
-		$("#player-name-p").html("Player: " + player_name);
-
-		get_highscore();
-		init();
-	});
-}
-
-$(document).ready(function(){
-
-	addHandlers();
-
-	get_highscore();
-
-	canvas = document.getElementById("tcanvas");
-
-	document.addEventListener('mousedown',function(event){
-		lastDownTarget = event.target;
-	},false);
-
-	document.addEventListener('keydown',function(event){
-		if(lastDownTarget == canvas){
-			keypressed(event);
-		}
-	},false);
-
-});
-
 
 </script>
 </html>

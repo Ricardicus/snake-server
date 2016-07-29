@@ -24,6 +24,15 @@ def remove_mini():
       SCORES.pop(i)
       return
 
+def store_scores():
+  f = open("scores/score.txt", "w")
+  new_scores = ""
+  for i in SCORES:
+    f.write(i["name"] + "\n")
+    f.write(str(i["score"]) + "\n")
+  print time.asctime(), " scores stored."
+
+
 def register(name, score):
   new = {}
   new["name"] = name
@@ -34,6 +43,24 @@ def register(name, score):
 
   SCORES.append(new)
   SCORES.sort(comp)
+
+  store_scores()
+
+def read_scores():
+  try:
+    scores = [content.rstrip('\n') for content in open('scores/score.txt')]
+    i = 0
+    while( i < len(scores) ) :
+      new = {}
+      new["name"] = scores[i]
+      i+=1
+      new["score"] = int(scores[i])
+      i+=1
+      SCORES.append(new)
+    print "Scores read from file"
+  except IOError, IndexError:
+    print "No scores read from file"
+
 
 def cgi(s, url):
 
@@ -102,17 +129,18 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     else:
       print s.path[1:]
       s.wfile.write("<html><head><title>Get page</title></head>")
-      s.wfile.write("<body><p>This is a test.</p>")
+      s.wfile.write("<body><p>Testing...</p>")
       s.wfile.write("<p>You accessed path: %s, from your ip: %s</p>" % (s.path , ".".join(s.address_string().split(".")[::-1][2:])))
       s.wfile.write("</body></html>") 
 
 if __name__ == '__main__':
   server_class = BaseHTTPServer.HTTPServer
   httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
+  read_scores()
   print time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER)
   try:
     httpd.serve_forever()
   except KeyboardInterrupt:
-    pass
+    store_scores()
   httpd.server_close()
   print time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER)
