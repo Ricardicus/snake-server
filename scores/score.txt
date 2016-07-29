@@ -1,4 +1,8 @@
 Rickard
+10
+Rickard
+9
+Rickard
 9
 Rickard
 8
@@ -14,7 +18,3 @@ Name
 3
 Name
 3
-Name
-2
-Name
-2
