@@ -78,7 +78,7 @@ def cgi(s, url):
     s.send_header("Content-type", "text/html")  
     s.end_headers()
 
-    s.wfile.write("<thead><tr><th></th><th><p>Name</p></th><th><p>Score</p></th></tr></thead>")
+    s.wfile.write("<thead><tr><th><p>Place</p></th><th><p>Name</p></th><th><p>Score</p></th></tr></thead>")
     s.wfile.write("<tbody>")
     if(len(SCORES) < 1):
       s.wfile.write("<td>No</td><td>results</td><td>yet ...</td>")
