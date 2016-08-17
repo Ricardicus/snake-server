@@ -127,7 +127,7 @@ function post_result(){
 
 	var url = "game.cgi?action=post_score&name=" + player_name + "&score=" + points;
 
-	$.ajax({method: "GET", url: url, dataType: "text",
+	$.ajax({type: "GET", url: url, dataType: "text",
 		success: function(response){
 			setTimeout(get_highscore, 1000);
 		}, 
@@ -142,7 +142,7 @@ function get_highscore(){
 
 	$("#ajax-loader").css("display", "inherit");
 
-	$.ajax({method: "GET", url: "game.cgi?action=get_highscore", dataType: "text",
+	$.ajax({type: "GET", url: "game.cgi?action=get_highscore", dataType: "text",
 		success: function(response){
 			$("#highscore-row").html(response);
 			$("#ajax-loader").css("display", "none");
