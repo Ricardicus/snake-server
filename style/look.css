@@ -35,6 +35,11 @@ img {
 	border-radius: 20px;
 }
 
+body {
+    background-image: url("stilbild.jpg");
+    background-color: #cccccc;
+}
+
 p.player-info {
 	text-align:center;
 	font-family: "Courier New", Courier, monospace;
