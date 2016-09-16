@@ -116,7 +116,7 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         s.send_header("Content-type", "text/javascript")
       elif(s.path.endswith(".css")):
         s.send_header("Content-type", "text/css")  
-      elif(s.path.endswith(".gif")):
+      elif(s.path.endswith(".gif") or s.path.endswith(".jpg")):
         s.send_header("Content-type", "image/gif")
         s.send_header("Content-description", "File Transfer");
         s.send_header("Content-transfer-encoding", "binary")
