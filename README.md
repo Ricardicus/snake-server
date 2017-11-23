@@ -1,4 +1,4 @@
-# This is a server hosting snake!
+# This childish server that hosts 'snake'!
 This is a little website that runs the game 'Snake'. 
 The server is backed with pythons 'BaseHTTPServer' module.
 # To run it on your system:
